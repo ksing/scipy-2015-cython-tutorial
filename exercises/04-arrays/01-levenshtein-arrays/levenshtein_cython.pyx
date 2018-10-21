@@ -31,13 +31,15 @@ def levenshtein_distance(s[1..m], char t[1..n]):
 
 import numpy as np
 
-def levenshtein_distance(s, t):
+
+def levenshtein_distance(bytes s, bytes t):
     # for all i and j, d[i,j] will hold the Levenshtein distance between
     # the first i characters of s and the first j characters of t;
     # note that d has (m+1)*(n+1) values
-    m = len(s)
-    n = len(t)
-    d = np.zeros((m+1, n+1), dtype=np.int32)
+    cdef:
+        int i, j
+        int m = len(s), n = len(t)
+        int[:, :] d = np.zeros((m+1, n+1), dtype=np.int32)
 
     # source prefixes can be transformed into empty string by
     # dropping all characters
@@ -56,16 +58,3 @@ def levenshtein_distance(s, t):
                               d[i, j-1] + 1,
                               d[i-1, j-1] + 1)
     return d[m, n]
- 
-    '''
-    for j from 1 to n:
-        for i from 1 to m:
-            if s[i] = t[j]:
-                d[i, j] := d[i-1, j-1]              // no operation required
-            else:
-                d[i, j] := minimum(d[i-1, j] + 1,   // a deletion
-                                   d[i, j-1] + 1,   // an insertion
-                                   d[i-1, j-1] + 1) // a substitution
-
-    return d[m, n]
-    '''
